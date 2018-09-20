@@ -1,0 +1,108 @@
+<meta charset="UTF-8">
+<style>
+#pic {width:300px; height:300px; position:absolute; top:100px; left:50px; border: 1px solid #000;}
+#pop {width:300px; height:300px; position:absolute; top:100px; left:500px; border: 1px solid #000; overflow: hidden;}
+#pop img {position: absolute; transform: scale(3);}
+#pic_child {width: 100px; height: 100px; position:absolute; border: 1px solid #000; background: #fff; opacity: 0.7; display: none;}
+</style>
+<script>
+$(document).ready(function(){
+	
+	var pic_w = $('#pic').width();
+	var pic_h = $('#pic').height();
+	var pic_child_w = $('#pic_child').width();
+	var pic_child_h = $('#pic_child').height();
+	var pageX = 50;
+	var pageY = 240;
+	
+	$('#pic').on('vmousemove',function(e){
+		// pageX=50px, pageY=240px
+		$(this).css('cursor','crosshair');
+		
+		// 왼위 
+		if( (e.pageX-pageX > pic_child_w/2) && (e.pageY-pageY <= pic_child_h/2) ) {		//x축
+			$('#pic_child').css('left',e.pageX-100);
+			$('#pic_child').css('top',0);	//왼위 고정
+			
+			$('#pop img').css('left',((pic_w*3-pic_w)/2)-((e.pageX-pageX-50)*3));
+			$('#pop img').css('top',(pic_h*3-pic_h)/2); //고정
+		}
+		if( (e.pageY-pageY > pic_child_h/2) && (e.pageX-pageX <= pic_child_w/2) ) {		//y축
+			$('#pic_child').css('left',0);	//왼위 고정
+			$('#pic_child').css('top',e.pageY-290);	
+			
+			$('#pop img').css('left',(pic_w*3-pic_w)/2); //고정
+			$('#pop img').css('top',((pic_h*3-pic_h)/2)-(e.pageY-pageY-50)*3);
+		}
+		if( (e.pageX-pageX > pic_child_w/2) && (e.pageY-240 > pic_child_h/2) ) {		//x,y축
+			$('#pic_child').css('left',e.pageX-(pageX+50));
+			$('#pic_child').css('top',e.pageY-(pageY+50));
+			
+			$('#pop img').css('left',((pic_w*3-pic_w)/2)-((e.pageX-pageX-50)*3)); //고정
+			$('#pop img').css('top',((pic_h*3-pic_h)/2)-((e.pageY-pageY-50)*3));  //고정
+		}
+		if( (e.pageX-pageX <= pic_child_w/2) && (e.pageY-pageY <= pic_child_h/2) ) {	//x,y축 기본값
+			$('#pic_child').css('left',0);
+			$('#pic_child').css('top',0);
+			
+			$('#pop img').css('left',(pic_w*3-pic_w)/2); //고정
+			$('#pop img').css('top',(pic_h*3-pic_h)/2);  //고정
+		}
+		
+		// 왼밑
+		if( (e.pageX-pageX > pic_child_w/2) && (e.pageY-pageY >= pic_h-(pic_child_h/2)) ) {		//x축
+			$('#pic_child').css('left',e.pageX-(pageX+50));
+			$('#pic_child').css('top',pic_h-pic_child_h);	//왼밑 고정
+			
+			$('#pop img').css('left',((pic_w*3-pic_w)/2)-((e.pageX-pageX-50)*3));
+			$('#pop img').css('top',-((pic_h*3-pic_h)/2)); //고정
+		}
+		if( (e.pageY-pageY > pic_child_h/2) && (e.pageY-pageY < pic_h-(pic_child_h/2)) && (e.pageX-pageX < pic_child_w/2) ) {		//y축
+// 			$('#pic_child').css('left',0);
+// 			$('#pic_child').css('top',e.pageY-pageY-50);
+		}
+		if( (e.pageX-pageX <= pic_child_w/2) && (e.pageY-pageY >= pic_h-(pic_child_h/2)) ) {	//x,y축 기본값
+			$('#pic_child').css('left',0);
+			$('#pic_child').css('top',pic_h-pic_child_h);	//왼밑 고정
+			
+			$('#pop img').css('left',(pic_w*3-pic_w)/2);    //고정
+			$('#pop img').css('top',-((pic_h*3-pic_h)/2));	//고정
+		}
+		
+		// 오위
+		if( (e.pageX-pageX > pic_child_w/2) && (e.pageX-pageX >= pic_w-(pic_child_w/2)) && (e.pageY-pageY <= pic_child_h/2) ) {		//x축
+			$('#pic_child').css('left',pic_w-pic_child_w);  //오위 고정(x축)
+			$('#pic_child').css('top',0);	//오위 고정(y축)
+			
+			$('#pop img').css('left',-((pic_w*3-pic_w)/2));
+			$('#pop img').css('top',(pic_h*3-pic_h)/2); //고정
+		}
+		if( (e.pageY-pageY > pic_child_h/2) && (e.pageX-pageX >= pic_w-(pic_child_w/2)) ) {		//y축
+			$('#pic_child').css('left',pic_w-pic_child_w);  //오위 고정(x축)
+			
+			$('#pop img').css('left',-((pic_w*3-pic_w)/2)); //고정
+			$('#pop img').css('top',((pic_h*3-pic_h)/2)-((e.pageY-pageY-50)*3));
+		}
+		
+		// 오밑
+		if( (e.pageX-pageX >= pic_w-(pic_child_w/2)) && (e.pageY-pageY >= pic_h-(pic_child_h/2)) ) {		//x,y축
+			$('#pop img').css('left',-((pic_w*3-pic_w)/2)); //고정
+			$('#pop img').css('top',-((pic_h*3-pic_h)/2)); //고정
+		}
+	});
+	
+	$('#pic').on('vmouseover', function(){
+		$('#pop').css('display','block');
+		$('#pic_child').show();
+	});
+	$('#pic').on('vmouseout', function(){
+		$('#pop').css('display','none');
+		$('#pic_child').hide();
+	});
+});
+</script>
+<h2>만들고싶은 01 > 이미지 확대 기능 (내가 만든거)</h2>
+<hr style="margin-bottom: 20px;">
+<div id="pic"><div id="pic_child"></div><img src="http://upload.wikimedia.org/wikipedia/ko/thumb/d/de/GJstamp_thumbsup.svg/300px-GJstamp_thumbsup.svg.png" /></div>
+<div id="pop" style="display: none;"><img src="http://upload.wikimedia.org/wikipedia/ko/thumb/d/de/GJstamp_thumbsup.svg/300px-GJstamp_thumbsup.svg.png" /></div>
+<div style="position: absolute; bottom: 50px;">※ 이미지 파일 업로드시 자동변환(300x300) 후 기능 동작하게 하는 기능 추가 예정!</div>

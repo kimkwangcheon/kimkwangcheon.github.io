@@ -1,0 +1,235 @@
+<div>
+	<meta charset="UTF-8">
+	<style>
+		.selectBox {height: 37px;}
+		div.search_area {width: 100%; height: 60px;}
+		div.search_area input.search {width: 300px; margin: 10px; padding: 10px;}
+		div.search_area a.searchCnt {display: none;}
+		div.search_area a.searchCnt b {color: #f00;}
+		div.exText {padding: 20px; border: 1px solid #A6A6A6;}
+	</style>
+	<script>
+		/*
+			g (global) : 첫번째 문자만이 아닌 패턴에 해당하는 모든 문자들을 검색하여 대체한다.
+			i (ignoreCase) : 대소문자 구분하지 않음.
+			m (multillineM) : 여러 줄 검색
+		*/
+		var exText = $('#exText').html();
+		exText = exText.replace(/\t/g,'');
+			
+		// 검색키워드 입력 후 엔터시
+// 		debugger;
+// 		var test = test0.replace(/\s눈/g,' 1');
+		$('#search').keydown(function(e){
+			if(e.keyCode == 13) {
+				
+				var sBox = $('#selectBox').val();
+				var val = $(this).val();
+				var regex = '';
+				var res = '';
+				var sCnt = 0;
+				var arr;
+				
+				// 검색어가 없을 때
+				if(val == '') {
+					alert('검색어를 입력해주세요');
+					return false;
+				}
+				
+				if (sBox == 0) {
+					alert('검색유형을 선택해주세요');
+					return false;
+				}
+				else if(sBox == 1) 
+				{
+					regex = eval('/'+val+'/g');
+					res = exText.replace(regex,'<b style="background:#ff9;">'+val+'</b>');
+					
+					// 검색건수 구하기
+					sCnt = exText.match(regex) == null ? 0 : exText.match(regex).length;
+					$('#searchCnt').html(sCnt);
+					$('.searchCnt').fadeOut(200).fadeIn(200);
+					
+				} 
+				else if (sBox == 2) 
+				{
+					regex = eval('/\\b'+val+'\\b/g');
+					res = exText.replace(regex, '<b style="background:#ff9;">'+val+'</b>');
+
+					// 검색건수 구하기
+					sCnt = exText.match(regex) == null ? 0 : exText.match(regex).length;
+					$('#searchCnt').html(sCnt);
+					$('.searchCnt').fadeOut(200).fadeIn(200);
+				}
+				else if (sBox == 3) 
+				{
+					regex = eval('/ '+val+'[^ ]/g');
+					arr = exText.match(regex);
+					if(arr != null) {
+						var arr_res = arr[0].split(val);
+						res = exText.replace(regex, '<b style="background:#ff9;">'+arr_res[0]+val+'</b>'+arr_res[1]);
+						sCnt = exText.match(regex).length;
+					} else { //검색결과가 없을 때, 기본 텍스트로
+						res = exText;
+						sCnt = 0;
+					}
+
+					// 검색건수 구하기
+					$('#searchCnt').html(sCnt);
+					$('.searchCnt').fadeOut(200).fadeIn(200);
+				}
+				else if (sBox == 4) 
+				{
+					regex = eval('/[^ ]'+val+' /g');
+					arr = exText.match(regex);
+					if(arr != null) {
+						var arr_res = arr[0].split(val);
+						res = exText.replace(regex, arr_res[0]+'<b style="background:#ff9;">'+val+arr_res[1]+'</b>');
+						sCnt = exText.match(regex).length;
+					} else { //검색결과가 없을 때, 기본 텍스트로
+						res = exText;
+						sCnt = 0;
+					}
+
+					// 검색건수 구하기
+					$('#searchCnt').html(sCnt);
+					$('.searchCnt').fadeOut(200).fadeIn(200);
+				}
+				else if (sBox == 5) 
+				{
+					regex = eval('/ '+val+' /g');
+					res = exText.replace(regex, '<b style="background:#ff9;"> '+val+' </b>');
+
+					// 검색건수 구하기
+					sCnt = exText.match(regex) == null ? 0 : exText.match(regex).length;
+					$('#searchCnt').html(sCnt);
+					$('.searchCnt').fadeOut(200).fadeIn(200);
+				}
+				
+				$('#exText').html(res);
+			}
+		});
+	</script>
+	<h2>정규식 활용 01 - 본문 찾기 테스트</h2>
+	<h4 style="margin-bottom: 20px; font-weight: normal;">※ 한글의 경우, 일치검색이 안됨. 한글은 2바이트 문자이므로 \b로 처리 안됨. 후방탐색을 사용하는 방법이 있는데, javaScript는 후방탐색을 제공하지 않음. </h4>
+	<div class="search_area">
+		<select class="selectBox" id="selectBox">
+			<option value="0">검색유형 선택</option>
+			<option value="1">일반 검색</option>
+			<option value="2">일치 검색</option>
+			<option value="3">왼쪽공백 검색</option>
+			<option value="4">오른쪽공백 검색</option>
+			<option value="5">양쪽공백 검색</option>
+		</select>
+		<input type="text" placeholder="여기에 찾을 텍스트를 입력 후 엔터" class="search" id="search">
+		<a class="searchCnt"><span>검색결과&nbsp;</span><b id="searchCnt"></b>건</a>
+	</div>
+	<div class="exText" id="exText">
+		<h3>박효신 - 숨 (노래 가사)</h3>
+		오늘 하루 쉴 숨이<br>
+		오늘 하루 쉴 곳이<br>
+		오늘만큼 이렇게 또 한번 살아가<br>
+		<br>
+		침대 밑에 놓아둔<br>
+		지난 밤에 꾼 꿈이<br>
+		지친 맘을 덮으며<br>
+		눈을 감는다 괜찮아<br>
+		<br>
+		남들과는 조금은 다른 모양 속에<br>
+		나 홀로 잠들어<br>
+		다시 오는 아침에<br>
+		눈을 뜨면 웃고프다<br>
+		<br>
+		오늘 같은 밤<br> 
+		이대로 머물러도 될 꿈이라면<br> 
+		바랄 수 없는걸 바라도 된다면<br>
+		두렵지 않다면 너처럼<br>
+		<br>
+		오늘 같은 날<br> 
+		마른 줄 알았던<br>
+		오래된 눈물이 흐르면<br> 
+		잠들지 않는 내 작은 가슴이<br> 
+		숨을 쉰다<br>
+		<br>
+		끝도 없이 먼 하늘<br>
+		날아가는 새처럼<br>
+		뒤돌아 보지 않을래<br>
+		이 길 너머 어딘가 봄이<br>
+		힘없이 멈춰있던<br>
+		세상에 비가 내리고<br>
+		다시 자라난 오늘<br>
+		그 하루를 살아<br>
+		<br>
+		오늘 같은 밤<br>
+		이대로 머물러도 될 꿈이라면<br>
+		바랄 수 없는걸 바라도 된다면<br>
+		두렵지 않다면 너처럼<br>
+		<br>
+		오늘 같은 날<br>
+		마른 줄 알았던<br>
+		오래된 눈물이 흐르면<br>
+		잠들지 않는<br>
+		이 어린 가슴이 숨을 쉰다<br>
+		고단했던 내 하루가<br>
+		숨을 쉰다<br>
+		<br>
+		<h3>Home - Michael Buble</h3>
+		Another summer day<br>
+		Is come and gone away<br>
+		In Paris and Rome<br>
+		But I wanna go home<br>
+		Mmmmmmmm<br>
+		<br>
+		Maybe surrounded by<br>
+		A million people I<br>
+		Still feel all alone<br>
+		I just wanna go home<br>
+		Oh I miss you, you know<br>
+		<br>
+		And I’ve been keeping all the letters that I wrote to you<br>
+		Each one a line or two<br>
+		″I’m fine baby, how are you?″<br>
+		Well I would send them but I know that it’s just not enough<br>
+		My words were cold and flat<br>
+		And you deserve more than that<br>
+		<br>
+		Another aerorplane<br>
+		Another sunny place<br>
+		I’m lucky I know<br>
+		But I wanna go home<br>
+		Mmmm, I’ve got to go home<br>
+		<br>
+		Let me go home<br>
+		I’m just too far from where you are<br>
+		I wanna come home<br>
+		<br>
+		And I feel just like I’m living someone else’s life<br>
+		It’s like I just stepped outside<br>
+		When everything was going right<br>
+		And I know just why you could not<br>
+		Come along with me<br>
+		But this was not your dream<br>
+		But you always believe in me<br>
+		<br>
+		Another winter day has come<br>
+		And gone away<br>
+		And even Paris and Rome<br>
+		And I wanna go home<br>
+		Let me go home<br>
+		<br>
+		And I’m surrounded by<br>
+		A million people I<br>
+		Still feel alone<br>
+		Oh, let go home<br>
+		Oh, I miss you, you know<br>
+		<br>
+		Let me go home<br>
+		I’ve had my run<br>
+		Baby, I’m done<br>
+		I gotta go home<br>
+		Let me go home<br>
+		It will all right<br>
+		I’ll be home tonight<br>
+		I’m coming back home<br>
+	</div>
+</div>

@@ -1,0 +1,82 @@
+<div>
+	<style>
+		.source {position: relative; margin-top: 20px;}
+		.gmap_addr input {border: none; border-bottom: 1px solid #000; margin: 10px 10px 10px 0; padding: 10px 0; width: 280px;}
+		.gmap_current input {border: none; border-bottom: 1px solid #000; margin: 10px 10px 10px 0; padding: 10px 0; width: 400px;}
+		.tab {width: 100%; height: 50px; border-bottom: 1px solid #000; margin-bottom: 20px;}
+		.tab ul li {width: 200px; height: 50px; line-height: 50px; text-align: center; border: 1px solid #000; border-bottom: none; float: left; border-radius: 0 20px 0 0; cursor: pointer;}
+		.tab ul li:first-child {background: #f99; color: #fff; font-weight: bold;}
+	</style>
+	<meta charset="UTF-8"> <!-- 이거 안했더니 한글 깨지더라 -->
+	<link rel="stylesheet" href="http://developers.google.com/maps/documentation/javascript/demos/demos.css">
+	
+	<div class="tab">
+		<ul>
+			<li>1. 마커 찍기</li>
+			<li>2. 한글주소입력</li>
+		</ul>
+	</div>
+	<h1 class="gmap_title">1. 구글 맵 API 활용 (지도 클릭시, 자동으로 주소 입력)</h1>
+	<div class="gmap_addr">
+		<input type="text" id="address1" placeholder="지도를 클릭시, 자동으로 주소가 입력됨">
+		<input type="text" id="address2" placeholder="지도를 클릭시, 자동으로 주소가 입력됨">
+	</div>
+	<div class="gmap_current">현 위치: <input type="text" id="address0"></div>
+	<!-- 실제로 지도가 들어가는 곳 -->
+	<div id="map" style="width:600px; height:600px;"></div>
+	<script>
+	function initMap() {
+		var cnt = 1; //마커 카운트 해서 우선 2개만 제한
+		var initLatLng = {lat:37.251031, lng:127.481929};
+		var geocoder = new google.maps.Geocoder;
+		var map = new google.maps.Map(document.getElementById('map'),{
+			center: initLatLng,
+			zoom: 16
+		});
+		addAddress(initLatLng, geocoder, 0);
+		
+		// 기본 마커 - 지도 생기면 중심에 찍혀있는 것
+        var basicMarker = new google.maps.Marker({
+            position: initLatLng,
+            map: map, //map을 선택 안해주면 마커는 생성되지만 표시는 안됨 이 경우는 setmap으로 나중에 호출할 수 있음
+            draggable: true
+        });
+		
+		// 클릭시 마커 생성
+        google.maps.event.addListener(map, 'click', function(event) {
+            if(cnt < 3) {
+                addMarker(event.latLng, map);
+                addAddress(event.latLng, geocoder, cnt);
+                cnt++;
+            }
+		});
+	}
+	function addMarker(location, map) {
+        var marker = new google.maps.Marker({
+            position: location,
+            map: map
+            //label : 1,2 넣으면 좋겠다
+        });
+    }
+	function addAddress(location, geocoder, cnt) { //역지오코딩을 활용한 주소 찾기
+        //주소 인풋창에 주소 변환해서 입력하는 것
+        geocoder.geocode({'location': location}, function(results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+                if (results[1]) {
+                    $('#address'+cnt).val(results[1].formatted_address);
+                } else {
+                    window.alert('No results found');
+                }
+            } else {
+                window.alert('Geocoder failed due to: ' + status);
+            }
+        });
+    }
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA16MIj6f6f1c_uiFZXD8Cy8C-tH4CnYdM&callback=initMap" async defer></script>
+	<div class="source">
+		<div>※ 출처1: <a target="_blank" href="http://html5around.com/wordpress/tutorials/gma-midpoint-1/">http://html5around.com/wordpress/tutorials/gma-midpoint-1/</a></div>
+		<div>※ 출처2: <a target="_blank" href="https://developers.google.com/maps/documentation/javascript/?refresh=1">https://developers.google.com/maps/documentation/javascript/?refresh=1</a></div>
+		<div>https://maps.googleapis.com/maps/api/geocode/json?address=%EA%B2%BD%EA%B8%B0%EB%8F%84%EC%9D%B4%EC%B2%9C%EC%8B%9C%EA%B4%80%EA%B3%A0%EB%8F%99</div>
+	</div>
+</div>
