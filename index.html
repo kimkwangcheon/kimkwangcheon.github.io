@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+body,ul,li,h1,h2,h3,h4,p {margin: 0; padding: 0; list-style: none; }
+.header {z-index: 1; position:fixed; width: 100%; height: 140px; background: #fff;}
+.header .menu_top {position: absolute; width: 100%; height: 100px;}
+.header .menu_top .logo {position: absolute; width: 100%; text-align: center; cursor: pointer;}
+.header .menu_top img {height: 96px;}
+.header .menu_top .bot_menu {position: relative; width: 960px; height: 30px; top: 65px; margin: 0 auto;}
+.header .menu_top .bot_menu ul li {float: left; margin-right: 10px; cursor: pointer;}
+.header .menu_top .bot_menu ul li:first-child {background-image: url("img/facebook_f.png"); width: 25px; height: 25px;}
+.header .menu_top .bot_menu ul li:nth-child(2) {background-image: url("img/blog_b.png"); width: 45px; height: 20px;}
+.header .menu_top .bot_menu ul li:nth-child(3) {background-image: url("img/insta_i1.png"); width: 25px; height: 25px;}
+.header .menu_top .bot_menu ul li:first-child:hover {background-image: url("img/facebook_f2.png"); background-repeat: no-repeat;}
+.header .menu_top .bot_menu ul li:nth-child(2):hover {background-image: url("img/blog_b2.png"); background-repeat: no-repeat;}
+.header .menu_top .bot_menu ul li:nth-child(3):hover {background-image: url("img/insta_i2.png"); background-repeat: no-repeat;}
+.header .menu {position: absolute; bottom: 0; width: 100%; height: 40px; background: #4374D9;} 
+.header .menu > ul.m_depth01 {max-width: 960px; height: 40px; margin: 0 auto;}
+.header .menu ul.m_depth01 > li {cursor: pointer; float: left; width: 160px; height: 40px; line-height: 40px; background: #4374D9; color: #fff; text-align: center; font-size: 14px;}
+.header .menu ul.m_depth01 > li:hover {color: #ff1; font-weight: bold;}
+.header .menu ul.m_depth01 > li:hover > ul.m_depth02 {background: #FFD9EC; display: block;}
+.header .menu ul.m_depth01 > li > ul.m_depth02 {display: none;}
+.header .menu ul.m_depth01 > li > ul.m_depth02 > li {background: none; color: #000; height: 30px; line-height: 30px; text-align: left; padding-left: 10px; font-size: 13px;}
+.header .menu ul.m_depth01 > li > ul.m_depth02 > li:hover {background: #fff;}
+.main {z-index: 0; position: relative; min-height: 600px; top: 140px; padding: 30px;}
+.main .loading { text-align: center; display: none; position: relative; top: 100px; }
+.main .contents {min-height: 600px; box-shadow: 0px 0px 10px 2px #e0e0e0; padding: 20px;}
+.blackMask { z-index:2; position: absolute; background: #000; opacity: 0.3; width: 100%; height: 100%; top: 0; display: none;}
+.ui-loader {display: none;}
+</style>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script type="text/javascript" src="js/jquery.magnify.js"></script>
+<script>
+$(document).ready(function(){
+	
+	//초기 페이지
+	$.ajax({
+		url : './01/regexp.html',
+		type : 'GET',
+		success : function(data){
+
+			loading_show();			
+			setTimeout(function(){
+				$('#contents').html(data);
+				loading_hide();
+			}, 500);
+		}
+	});
+	
+	// SNS 클릭시
+	$('#bot_menu ul li').click(function(){
+		var val = $(this).attr('value');
+		
+		if(val == '01') window.open("http://www.facebook.com/edwinkwangcheon.kim", 'kkc_facebook');
+		if(val == '02') window.open("http://kim22036.tistory.com", 'kkc_blog');
+		if(val == '03') window.open("http://www.instagram.com/edwinkwangcheon", 'kkc_instagram');
+	});
+	
+	// 메뉴 클릭시 - "만들고 싶은 01"
+	$('#menuList #menuList01 ul li').click(function(){
+		var name = $(this).attr('value');
+
+		$.ajax({
+			url : './01/'+name+'.html',
+			type : 'GET',
+			success : function(data){
+				
+				loading_show();
+				setTimeout(function(){
+					$('#contents').html(data);
+					loading_hide();
+				}, 500);
+			}
+		});
+	});
+	
+});
+function loading_show() {
+	$('#contents').hide();
+	$('#loading').show();
+	$('#blackMask').show();
+}
+function loading_hide() {
+	$('#loading').hide();
+	$('#blackMask').hide();
+	$('#contents').show();
+}
+</script>
+</head>
+<body>
+<div class="header">
+	<div class="menu_top">
+		<p class="logo" onclick="location.href='./index.html'"><img src="img/logo.png" /></p>
+		<div class="bot_menu" id="bot_menu">
+			<ul>
+				<li value="01"></li>
+				<li value="02"></li>
+				<li value="03"></li>
+			</ul>
+		</div>
+	</div>
+	<div class="menu">
+		<ul class="m_depth01" id="menuList">
+			<li id="menuList01"><a>만들고싶은 01</a>
+				<ul class="m_depth02">
+					<li value="expand"><a>이미지 확대 기능</a></li>
+					<li value="expand2"><a>이미지 확대 기능(API)</a></li>
+					<li value="map_google"><a>구글맵 API</a></li>
+					<li value="map_google02"><a>구글맵 API 02</a></li>
+					<li value="regexp"><a>정규식 활용 01</a></li>
+				</ul>
+			</li>
+			<li id="menuList02"><a>만들고싶은 02</a>
+				<ul class="m_depth02">
+					<li><a>jsTree</a></li>
+					<li><a>D3</a></li>
+					<li><a>NONE</a></li>
+					<li><a>NONE</a></li>
+				</ul>
+			</li>
+			<li id="menuList03"><a>만들고싶은 03</a></li>
+			<li id="menuList04"><a>만들고싶은 04</a></li>
+			<li id="menuList05"><a>만들고싶은 05</a></li>
+			<li id="menuList06"><a>만들고싶은 06</a></li>
+		</ul>
+	</div>
+</div>
+
+<div class="main" id="main">
+	<div class="loading" id="loading"><img src="img/loading.gif" /></div> <!-- 로딩바 -->
+	<div class="contents" id="contents"></div>
+</div>
+<div class="blackMask" id="blackMask"></div>
+</body>
+</html>
